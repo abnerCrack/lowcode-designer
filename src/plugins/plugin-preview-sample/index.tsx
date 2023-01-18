@@ -1,24 +1,22 @@
 import { ILowCodePluginContext } from '@alilc/lowcode-engine';
 import { Button } from '@alifd/next';
-import {
-  saveSchema,
-} from '../../services/mockService';
+import { saveSchema } from '../../services/api';
+import { getId } from 'src/utils';
 
 // 保存功能示例
 const PreviewSamplePlugin = (ctx: ILowCodePluginContext) => {
   return {
     async init() {
-      const { skeleton, config } = ctx;
+      const { skeleton } = ctx;
+      const id = getId()
       const doPreview = () => {
-        const scenarioName = config.get('scenarioName');
-        saveSchema(scenarioName);
+        saveSchema(id);
         setTimeout(() => {
-          const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
-          window.open(`./preview.html${search}`);
+          window.open(`./preview.html?${id}`);
         }, 500);
       };
       skeleton.add({
-        name: 'previewSample',
+        name: 'preview',
         area: 'topArea',
         type: 'Widget',
         props: {
@@ -32,9 +30,11 @@ const PreviewSamplePlugin = (ctx: ILowCodePluginContext) => {
       });
     },
   };
-}
+};
 PreviewSamplePlugin.pluginName = 'PreviewSamplePlugin';
 PreviewSamplePlugin.meta = {
   dependencies: ['EditorInitPlugin'],
 };
 export default PreviewSamplePlugin;
+
+
